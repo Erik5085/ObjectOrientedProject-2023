@@ -1,17 +1,12 @@
 package libraryProject;
-/***
- * Will contain and manage book classes
- * @author 
- *
- */
-public class Library extends Book {
-	private int amt;	//num of this book stored
-	
-	public int getAmt() {
-		return amt;
-	}	
-	public void setAmt(int newAmt) {
-		amt = newAmt;
-	}
-	
+
+public class Library {
+    public Book []books;
+    public String name;
+    public Library(String name, Book books[])
+    {
+        this.name=name;
+        this.books=books;
+    }
 }
+
