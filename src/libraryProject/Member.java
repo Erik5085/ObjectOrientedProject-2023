@@ -6,8 +6,6 @@ public class Member extends Library{
 	private String user;
 	private String pass;
 	private int restriction;
-	public Book books[]=new Book[5];
-	public int amount=0;
 	public Member(String user,String pass)
 	{
 		super(user,5);
@@ -37,37 +35,13 @@ public class Member extends Library{
 	{
 		return this.pass.equals(pass);
 	}
-	public int permission(){
+	public int permission()
+	{
 		return this.restriction;
 	}
-	public int add_book(Book book_inp)
+	public void change_restriction(int restriction)
 	{
-		if(amount<5)
-		{
-			books[amount]=book_inp;
-			amount++;
-			System.out.println("You have successfully added a book");
-			return 1;
-		}
-		System.out.println("You can only rent 5 books at a time");
-		return 0;
-	}
-	public void list_books()
-	{
-		System.out.println("Index\tName\tAuthor\tGenre");
-        for(int i=0;i<amount;i++)
-        {
-            System.out.printf("%d %s\t%s\t%d\t%s\n",i,books[i].name(),books[i].author,books[i].serialNumber,books[i].genre);
-        }
-    }
-	public Book return_book(int index)
-	{
-		Book tmp;
-		return books[index];
-		for(int i=index; i<amount-1;i++)
-		{
-			book[i]=book[i+1];
-		}
+		this.restriction=restriction;
 	}
 	public static void main(String[] args) {
 		Scanner kb = new Scanner(System.in);
@@ -87,7 +61,13 @@ public class Member extends Library{
 		Book tmp_book;
 		while(bool)
 		{
-			System.out.println("Press 1 to login, 2 to register, 3 to view members, 4 to rent a book, 5 to return a book,6 to exit");
+			System.out.print("Press 1 to login, 2 to register, 3 to view members, 4 to rent a book, 5 to return a book,6 to exit");
+			if(logged)
+			{
+				if(reader.restriction==1)
+					System.out.print("7 to add a book to the library, 8 to remove a book from the library");
+			}
+			System.out.println();
 			try
 			{
 			inp = kb.nextInt();
@@ -157,7 +137,7 @@ public class Member extends Library{
 					System.out.println("Invalid input run the program again");
 					break;
 				}
-				Member tmp=new Member(user,pass);
+				Member tmp=new Member(user,pass,1);
 				member_list[count]=tmp;
 				count++;
 				break;
@@ -176,6 +156,7 @@ public class Member extends Library{
 				book_index=kb.nextInt();
 				tmp_book=lib.remove_book(book_index);
 				reader.add_book(tmp_book);
+				System.out.println("You have successfully added a book");
 				}
 				else
 					System.out.println("you have not logged in yet please log in");
@@ -187,6 +168,7 @@ public class Member extends Library{
 					reader.list_books();
 					book_index=kb.nextInt();
 					lib.add_book(reader.remove_book(book_index));
+					System.out.println("You have successfully returned a book");
 				}
 				else
 					System.out.println("you have not logged in yet please log in");
@@ -194,10 +176,39 @@ public class Member extends Library{
 			case 6:
 				bool=false;
 				break;
+			case 7:
+				if(logged &&(reader.permission()>=1))
+				{
+					tmp_book=new Book();
+					System.out.println("what is the name of the book you want to add");
+					tmp_book.name=kb.nextLine();
+					System.out.println("what is the author of the book you want to add");
+					tmp_book.author=kb.nextLine();
+					System.out.println("what is the serial number of the book you want to add");
+					tmp_book.serialNumber=kb.nextInt();
+					System.out.println("what is the genre of the book you want to add");
+					tmp_book.genre=kb.nextLine();
+					System.out.println("what is the restriction level of the book you want to add");
+					tmp_book.restriction=kb.nextInt();
+					lib.add_book(tmp_book);
+				}
+				else
+					System.out.println("Incorrect input please try again");	
+				break;
+			case 8:
+				if(logged && (reader.permission()>=1))
+				{
+					System.out.println("which book do you want to remove please provide the index that the book is at");
+					lib.list_books();
+					book_index=kb.nextInt();
+					lib.remove_book(book_index);
+				}
+				else 
+					System.out.println("Incorrect input please try again");	
+				break;
 			default:
 				System.out.println("Incorrect input please try again");	
 			}
 		}
 	}
 }
-
