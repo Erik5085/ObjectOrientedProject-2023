@@ -16,7 +16,7 @@ public class Library {
     {
         this.name=name;
         this.books=books;
-        amount=books.length;
+        amount=0;
         this.max=50;
     }
     public void list_books()
