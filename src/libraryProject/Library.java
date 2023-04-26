@@ -1,4 +1,13 @@
-package libraryProject;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 /**
  * Library class stores Books as arrays and adds/removes books
@@ -6,10 +15,10 @@ package libraryProject;
  *
  */
 public class Library {
-    public Book []books;	//Book array to contain Book values/params
-    public int amount;		//amount of books stored in Library
-    public int max;			//maximum amount of books to be stored in Library
-    public String name;		//Name of library, mostly for Member name
+    private Book []books;	//Book array to contain Book values/params
+    private int amount;		//amount of books stored in Library
+    private int max;			//maximum amount of books to be stored in Library
+    private String name;		//Name of library, mostly for Member name
         
     /*
      * Library constructor for length
@@ -41,10 +50,20 @@ public class Library {
         System.out.println("Index\tName\tAuthor\tGenre");
         for(int i=0;i<amount;i++)
         {
-            System.out.printf("%d\t%s\t%s\t%d\t%s\n",i,books[i].name,books[i].author,books[i].serialNumber,books[i].genre);
+            System.out.printf("%d\t%s\t%s\t%d\t%s\n",i,books[i].getName(),books[i].getAuthor(),books[i].getSerial(),books[i].getGenre());
         }
     }
-    
+    /*
+     *  Adds books to vBox
+     */
+    public void list_books(VBox vbox)
+    {
+        vbox.getChildren().add(new Label("Index\tName\tAuthor\tGenre"));
+        for(int i=0;i<amount;i++)
+        {
+            vbox.getChildren().addAll(new Label(i+books[i].getName()+books[i].getAuthor()+books[i].getSerial()+books[i].getGenre()));
+        }
+    }
     /*
      * Adds book to Book array
      */
@@ -71,5 +90,35 @@ public class Library {
         }
         amount--;
         return tmp;
+    }
+    /*
+     *  Getter methods
+     */
+    public Book[] getBooks(){
+        return books;
+    }
+    public int getAmount(){
+        return amount;
+    }
+    public int getMax(){
+        return max;
+    }
+    public String getName(){
+        return name;
+    }
+    /*
+     *  Setter methods
+     */
+    public void setBooks(Book books[]){
+        this.books=books;
+    }
+    public void setAmount(int amount){
+        this.amount=amount;
+    }
+    public void setMax(int max){
+        this.max=max;
+    }
+    public void setName(String name){
+        this.name=name;
     }
 }
