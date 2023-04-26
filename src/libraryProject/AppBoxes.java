@@ -115,21 +115,12 @@ public class AppBoxes extends Application {
     	VBox vbox = new VBox();
     	vbox.getChildren().clear();
     	
-    	Button loginButton = new Button("Login");
-        Button registerButton = new Button("Register");
-        Button listBooks = new Button("List Books in library");
-        Button addBookButton = new Button("Rent Book");
-        Button returnBookButton = new Button("Return Book");
-        Button exitButton = new Button("Exit");
-        	// Buttons for restrict lvl 1
-        Button addBookLibButton = new Button("Add Book to library");
-        Button removeBookLibButton = new Button("Add remove a book from the library");
-        
-        Button submit = new Button("Submit");
-        Button back = new Button("Back");
+    	// redefine nav buttons everytime go back to main screen
+        submit = new Button("Submit");
+        home = new Button("Home");
+        hub = new HBox(submit, home);
         
         
-    	
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -150,43 +141,23 @@ public class AppBoxes extends Application {
             	listBooks.getScene().setRoot(loadViewBooks());
             }
         });
+        
         addBookButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	addBookButton.getScene().setRoot(loadRentBook());
-            }
+        	@Override
+        	public void handle(ActionEvent event) {
+        		addBookButton.getScene().setRoot(loadRentBook());
+        	}
         });
-        returnBookButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	returnBookButton.getScene().setRoot(loadReturnBook());
-            }
-        });
-        addBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	addBookLibButton.getScene().setRoot(loadAddLibBook());
-            }
-        });
-        removeBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	removeBookLibButton.getScene().setRoot(loadRemLibBook());
-            }
-        });
-        
-        
-    	
-        
+
         vbox.getChildren().addAll(loginButton,registerButton,listBooks,addBookButton,returnBookButton,exitButton,message);
 
-        
     	return vbox;
     }
     
     public VBox loadLoginScreen() {
     	VBox vbox = new VBox();
-    	
+		vbox.getChildren().clear();
+
     	home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -233,7 +204,8 @@ public class AppBoxes extends Application {
     
 	public VBox loadRegScreen() {
 		VBox vbox = new VBox();
-		
+		vbox.getChildren().clear();
+
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -280,20 +252,41 @@ public class AppBoxes extends Application {
         usernameField.clear();
         passwordField.clear();
         restrictionField.clear();
+        
         // Add the username and password fields to the VBox
         vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField,restrictionLabel, restrictionField, hub);
-        
     	return vbox;
 	}
 	
 	public VBox loadViewBooks() {
 		VBox vbox = new VBox();
+		vbox.getChildren().clear();
+		lib.list_books(vbox);
 		
+		home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	home.getScene().setRoot(loadMainScreen());
+            }
+        });
+		
+        vbox.getChildren().addAll(home);
 		return vbox;
 	}
 	
 	public VBox loadRentBook() {
 		VBox vbox = new VBox();
+		lib.list_books(vbox);
+
+		
+		home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	home.getScene().setRoot(loadMainScreen());
+            }
+        });
+		
+		
 		
 		return vbox;
 	}
