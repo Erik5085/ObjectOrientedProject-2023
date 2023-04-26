@@ -35,7 +35,7 @@ public class App extends Application {
     Button userBooksButton = new Button("View user's books");
     // Buttons for restrict lvl 1
     Button addBookLibButton = new Button("Add Book to library");
-    Button removeBookLibButton = new Button("Add remove a book from the library");
+    Button removeBookLibButton = new Button("Remove a book from the library");
     
 
     // Create the text fields for the login button
@@ -60,6 +60,7 @@ public class App extends Application {
     Label genreBookLabel = new Label("Genre: ");
     TextField genreBookField = new TextField();
     
+    Label prompt = new Label("Pick an action");
     Label message= new Label("Please log in/register an account");
     boolean bool=true; //bool set to true to keep while loop on
     String user;	//local inputted username
@@ -67,11 +68,14 @@ public class App extends Application {
     int restriction;	//Stores restriction of user
     int inp;		//Value storage for case choice
     
+
     boolean repeat=false; //Used for register event
     //Adding books to Book array
     
     int book_index;	//stores index of chosen book
-    Book tmp_book;	//stores temp index of chosen book`
+    Book tmp_book;	//stores temp index of chosen book
+
+
     @Override
     
     /*
@@ -86,7 +90,7 @@ public class App extends Application {
         
 		//Adding books to Book array
 		lib.add_book(new Book("The Hunger Games","Suzanne Collins",0,"Young adult"));
-		lib.add_book(new Book("Harry Potter and the Order of the Phoenix"," J.K. Rowling",1,"Fantasy"));
+		lib.add_book(new Book("Harry Potter and the Order of the Phoenix","J.K. Rowling",1,"Fantasy"));
 		lib.add_book(new Book("Pride and Prejudice","Jane Austen",2,"Classics"));
 		lib.add_book(new Book("Industrial society and its future","Ted Kazynski",3,"Nonfiction"));
 		lib.add_book(new Book("A Game of Thrones","George R. R. Martin",4,"Fantasy"));
@@ -112,7 +116,7 @@ public class App extends Application {
     public VBox loadMainScreen() {
     	VBox vbox = new VBox();
     	vbox.getChildren().clear();
-    	
+    	prompt.setText("Pick an action");
     	// redefine nav buttons everytime go back to main screen
         submit = new Button("Submit");
         home = new Button("Home");
@@ -147,6 +151,7 @@ public class App extends Application {
 
             }
         });
+        vbox.getChildren().addAll(prompt,loginButton,registerButton);
         if(logged){
             userBooksButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -166,38 +171,25 @@ public class App extends Application {
                     returnBookButton.getScene().setRoot(loadReturnBook());
                 }
             });
+            vbox.getChildren().addAll(userBooksButton,listBooks,addBookButton,returnBookButton);
             if(reader.permission()>=1)
-            addBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    addBookLibButton.getScene().setRoot(loadAddLibBook());
-                }
-            });
-            removeBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    removeBookLibButton.getScene().setRoot(loadRemLibBook());
-                }
-            });
-            
+            {
+                addBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        addBookLibButton.getScene().setRoot(loadAddLibBook());
+                    }
+                });
+                removeBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        removeBookLibButton.getScene().setRoot(loadRemLibBook());
+                    }
+                });
+                vbox.getChildren().addAll(addBookLibButton,removeBookLibButton);
+            }   
         }   
-        vbox.getChildren().addAll(loginButton,registerButton,userBooksButton,listBooks,addBookButton,returnBookButton,exitButton,message);
-        if(logged && reader.permission()>=1)
-        {
-            addBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    addBookLibButton.getScene().setRoot(loadAddLibBook());
-                }
-            });
-            removeBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    removeBookLibButton.getScene().setRoot(loadRemLibBook());
-                }
-            });
-            //vbox.getChildren().addAll(addBookButton,removeBookLibButton);
-        }
+        vbox.getChildren().addAll(exitButton,message);
     	return vbox;
     }
     
@@ -240,7 +232,6 @@ public class App extends Application {
     		}
     	});
     	
-    	vbox.getChildren().clear();
         usernameField.clear();
         passwordField.clear();
         // Add the username and password fields to the VBox
@@ -357,9 +348,10 @@ public class App extends Application {
 	}
 	public VBox loadReturnBook() {
 		VBox vbox = new VBox();
+        prompt.setText("Which book do you want to return");
+        vbox.getChildren().addAll(prompt);
 		reader.list_books(vbox);
         vbox.getChildren().addAll(indexLabel,indexField,hub);
-        message.setText("Which book do you want to return");
         home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -403,12 +395,61 @@ public class App extends Application {
     }
 	public VBox loadAddLibBook() {
 		VBox vbox = new VBox();
-		
+        vbox.getChildren().addAll(nameBookLabel,nameBookField,authorBookLabel,authorBookField,serialBookLabel,serialBookField,genreBookLabel,genreBookField,hub);
+		home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	home.getScene().setRoot(loadMainScreen());
+            }
+        });
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try 
+                {
+                    tmp_book=new Book(nameBookField.getText(),authorBookField.getText(),Integer.parseInt(serialBookField.getText()),genreBookField.getText());
+                    lib.add_book(tmp_book);
+                } 
+                catch (NumberFormatException e) 
+                {
+                    message.setText("Error Occurred please try again");
+                }
+            	submit.getScene().setRoot(loadMainScreen());
+            }
+        });
 		return vbox;
 	}
 	public VBox loadRemLibBook() {
 		VBox vbox = new VBox();
-		
+        prompt.setText("Which book do you want to remove from the library");
+        vbox.getChildren().addAll(prompt);
+		lib.list_books(vbox);
+        vbox.getChildren().addAll(indexLabel,indexField,hub);
+        home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	home.getScene().setRoot(loadMainScreen());
+            }
+        });
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                    try
+                    {
+                        book_index=Integer.parseInt(indexField.getText());
+                        lib.remove_book(book_index);
+                    }
+                    catch (InputMismatchException e)
+                    { 
+                        message.setText("Non integer entered");
+                    }
+                    catch(IndexOutOfBoundsException e)
+                    {
+                        message.setText("Index out of range");
+                    }
+                submit.getScene().setRoot(loadMainScreen());
+            }
+        });
 		return vbox;
 	}
 }
