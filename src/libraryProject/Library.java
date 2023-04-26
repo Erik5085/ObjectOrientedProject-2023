@@ -1,3 +1,5 @@
+package application;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,7 +52,7 @@ public class Library {
         System.out.println("Index\tName\tAuthor\tGenre");
         for(int i=0;i<amount;i++)
         {
-            System.out.printf("%d\t%s\t%s\t%d\t%s\n",i,books[i].getName(),books[i].getAuthor(),books[i].getSerial(),books[i].getGenre());
+            System.out.printf("%d\t%s\t%s\t%d\t%s\n",i,books[i].getName(),books[i].getAuthor(),books[i].getGenre());
         }
     }
     /*
@@ -58,10 +60,10 @@ public class Library {
      */
     public void list_books(VBox vbox)
     {
-        vbox.getChildren().add(new Label("Index\tName\tAuthor\tGenre"));
+        vbox.getChildren().add(new Label("Index\t\tName\t\tAuthor\t\tGenre"));
         for(int i=0;i<amount;i++)
         {
-            vbox.getChildren().addAll(new Label(i+books[i].getName()+books[i].getAuthor()+books[i].getSerial()+books[i].getGenre()));
+            vbox.getChildren().addAll(new Label(i+"\t\t" + books[i].getName()+ "\t\t" + books[i].getAuthor()+ "\t\t" + books[i].getGenre()));
         }
     }
     /*

@@ -1,4 +1,4 @@
-
+package application;
 import java.util.*;
 
 /**
@@ -92,11 +92,11 @@ public class Member extends Library{
 		Library lib=new Library("The Library", 50);	//initiate Library with max size 50
 		
 		//Adding books to Book array
-		lib.add_book(new Book("The Hunger Games","Suzanne Collins",0,"Young adult"));
-		lib.add_book(new Book("Harry Potter and the Order of the Phoenix"," J.K. Rowling",1,"Fantasy"));
-		lib.add_book(new Book("Pride and Prejudice","Jane Austen",2,"Classics"));
-		lib.add_book(new Book("Industrial society and its future","Ted Kazynski",3,"Nonfiction"));
-		lib.add_book(new Book("A Game of Thrones","George R. R. Martin",4,"Fantasy"));
+		lib.add_book(new Book("The Hunger Games","Suzanne Collins","Young adult"));
+		lib.add_book(new Book("Harry Potter and the Order of the Phoenix"," J.K. Rowling","Fantasy"));
+		lib.add_book(new Book("Pride and Prejudice","Jane Austen","Classics"));
+		lib.add_book(new Book("Industrial society and its future","Ted Kazynski","Nonfiction"));
+		lib.add_book(new Book("A Game of Thrones","George R. R. Martin","Fantasy"));
 		
 		int book_index;	//stores index of chosen book
 		Book tmp_book;	//stores temp index of chosen book
@@ -249,15 +249,13 @@ public class Member extends Library{
 					{
 					tmp_book=new Book();
 					System.out.println("what is the name of the book you want to add");
-					tmp_book.setName(kb.next());
+					tmp_book.name=kb.next();
 					System.out.println("what is the author of the book you want to add");
-					tmp_book.setAuthor(kb.next());
-					System.out.println("what is the serial number of the book you want to add");
-					tmp_book.setSerial(kb.nextInt());
+					tmp_book.author=kb.next();
 					System.out.println("what is the genre of the book you want to add");
-					tmp_book.setGenre(kb.next());
+					tmp_book.genre=kb.next();
 					System.out.println("what is the restriction level of the book you want to add");
-					tmp_book.setRestriction(kb.nextInt());
+					tmp_book.restriction=kb.nextInt();
 					lib.add_book(tmp_book);
 					}
 					catch (InputMismatchException e)

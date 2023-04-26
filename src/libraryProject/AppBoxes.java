@@ -1,5 +1,7 @@
+package application;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -11,7 +13,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.util.*;
 
-public class App extends Application {
+/**
+ * App
+ * @author Erik Vaughn, Thomas Truong, 
+ *
+ */
+public class AppBoxes extends Application {
     public int count=0;	//stores count for For loops
     public int state=0;	//stores current state of event
     public boolean logged=false; //checks if user is logged in
@@ -29,7 +36,7 @@ public class App extends Application {
     Button loginButton = new Button("Login");
     Button registerButton = new Button("Register");
     Button listBooks = new Button("List Books in library");
-    Button addBookButton = new Button("Rent Book");
+    Button rentBookButton = new Button("Rent Book");
     Button returnBookButton = new Button("Return Book");
     Button exitButton = new Button("Exit");
     Button userBooksButton = new Button("View user's books");
@@ -74,8 +81,8 @@ public class App extends Application {
     
     int book_index;	//stores index of chosen book
     Book tmp_book;	//stores temp index of chosen book
-
-
+    
+    
     @Override
     
     /*
@@ -89,17 +96,12 @@ public class App extends Application {
         primaryStage.show();
         
 		//Adding books to Book array
-		lib.add_book(new Book("The Hunger Games","Suzanne Collins",0,"Young adult"));
-		lib.add_book(new Book("Harry Potter and the Order of the Phoenix","J.K. Rowling",1,"Fantasy"));
-		lib.add_book(new Book("Pride and Prejudice","Jane Austen",2,"Classics"));
-		lib.add_book(new Book("Industrial society and its future","Ted Kazynski",3,"Nonfiction"));
-		lib.add_book(new Book("A Game of Thrones","George R. R. Martin",4,"Fantasy"));
-		
-		int book_index;	//stores index of chosen book
-		Book tmp_book;	//stores temp index of chosen book
-		
-        
-        
+		lib.add_book(new Book("The Hunger Games","Suzanne Collins","Young adult"));
+		lib.add_book(new Book("Harry Potter and the Order of the Phoenix","J.K. Rowling","Fantasy"));
+		lib.add_book(new Book("Pride and Prejudice","Jane Austen","Classics"));
+		lib.add_book(new Book("Industrial society and its future","Ted Kazynski","Nonfiction"));
+		lib.add_book(new Book("A Game of Thrones","George R. R. Martin","Fantasy"));
+
         VBox vbox = new VBox();
     }
     
@@ -111,7 +113,7 @@ public class App extends Application {
     }
     
     /*
-     * Main screen
+     * Loads main screen that contains all the buttons
      */
     public VBox loadMainScreen() {
     	VBox vbox = new VBox();
@@ -148,38 +150,51 @@ public class App extends Application {
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
+            	Platform.exit();
             }
         });
-        vbox.getChildren().addAll(prompt,loginButton,registerButton);
+        
+        vbox.getChildren().addAll(prompt,loginButton,registerButton, listBooks);
+        
+        // Check for buttons to show when logged in
         if(logged){
+        	// Shows books in user's library
             userBooksButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     userBooksButton.getScene().setRoot(loadUserBooks());
                 }
             });
-            addBookButton.setOnAction(new EventHandler<ActionEvent>() {
+            
+            // Shows books to be rented
+            rentBookButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    addBookButton.getScene().setRoot(loadRentBook());
+                    rentBookButton.getScene().setRoot(loadRentBook());
                 }
             });
+            
+            // Shows books to be returned from user's library
             returnBookButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     returnBookButton.getScene().setRoot(loadReturnBook());
                 }
             });
-            vbox.getChildren().addAll(userBooksButton,listBooks,addBookButton,returnBookButton);
+            vbox.getChildren().addAll(userBooksButton,rentBookButton,returnBookButton);
+            
+            // Buttons for if user is restriction level = 1
             if(reader.permission()>=1)
             {
+            	// For adding books to the library
                 addBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
                         addBookLibButton.getScene().setRoot(loadAddLibBook());
                     }
                 });
+                
+                // For removing books from the library
                 removeBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -189,14 +204,18 @@ public class App extends Application {
                 vbox.getChildren().addAll(addBookLibButton,removeBookLibButton);
             }   
         }   
-        vbox.getChildren().addAll(exitButton,message);
+        vbox.getChildren().addAll(exitButton,message); //Shows exit button at the very bottom under all the other buttons
     	return vbox;
     }
     
+    /*
+     * Loads screen for logins
+     */
     public VBox loadLoginScreen() {
     	VBox vbox = new VBox();
 		vbox.getChildren().clear();
 
+		// Home button goes back home
     	home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -204,13 +223,13 @@ public class App extends Application {
             }
         });
     	
+    	// On 
     	submit.setOnAction(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			System.out.println("This worked!");
-    			 user=usernameField.getText();
-                 pass=passwordField.getText();
-                 System.out.println(user + " " + pass);
+    			user=usernameField.getText();
+                pass=passwordField.getText();
+                System.out.println(user + " " + pass);
  				for(int i=0;i<count;i++)
  				{
  					if(member_list[i].getName().equals(user))
@@ -240,10 +259,14 @@ public class App extends Application {
     	return vbox;
     }
     
+    /*
+     * Loads screen for account register
+     */
 	public VBox loadRegScreen() {
 		VBox vbox = new VBox();
 		vbox.getChildren().clear();
 
+		// Home button goes back home
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -275,9 +298,10 @@ public class App extends Application {
                         submit.getScene().setRoot(loadMainScreen());
                     }
                 }
-                if(!repeat)	//For all normal cases
+                if(!repeat)	//For successful 
 				{
                     System.out.println(user+pass);
+                    message.setText("Account created successfully");
 					member_list[count] = new Member(user,pass,restriction);
 					count++;
 					submit.getScene().setRoot(loadMainScreen());
@@ -319,12 +343,15 @@ public class App extends Application {
 		
 		vbox.getChildren().addAll(indexLabel,indexField);
 		
+		// Home button goes back home
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
             	home.getScene().setRoot(loadMainScreen());
             }
         });
+		
+		// Runs submit to rent books
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -336,9 +363,26 @@ public class App extends Application {
                     message.setText("You have successfully added a book");
                     submit.getScene().setRoot(loadMainScreen());
                 }
+            	catch (NullPointerException e)
+            	{
+            		System.out.println("bad.");
+            		message.setText("Invalid input run the program again");
+                    submit.getScene().setRoot(loadMainScreen());
+            	}
                 catch (NumberFormatException e)
                 { 
+                	System.out.println("BAD.");
                     message.setText("Invalid input run the program again");
+                    submit.getScene().setRoot(loadMainScreen());
+                }
+            	catch (InputMismatchException e)
+                { 
+                    message.setText("Non integer entered");
+                    submit.getScene().setRoot(loadMainScreen());
+                }
+                catch(IndexOutOfBoundsException e)
+                {
+                    message.setText("Index out of range");
                     submit.getScene().setRoot(loadMainScreen());
                 }
             }
@@ -346,19 +390,29 @@ public class App extends Application {
         vbox.getChildren().addAll(hub);
         return vbox;
 	}
+	
+	/*
+	 * Screen for returning books
+	 */
 	public VBox loadReturnBook() {
 		VBox vbox = new VBox();
         prompt.setText("Which book do you want to return");
         vbox.getChildren().addAll(prompt);
+        
 		reader.list_books(vbox);
+		
         vbox.getChildren().addAll(indexLabel,indexField,hub);
+        
+        // Home button goes back home
         home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
             	home.getScene().setRoot(loadMainScreen());
             }
         });
-        submit.setOnAction(new EventHandler<ActionEvent>() {
+        
+        // Submit button runs return submission
+    	submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                     try
@@ -366,13 +420,21 @@ public class App extends Application {
                         book_index=Integer.parseInt(indexField.getText());
                         lib.add_book(reader.remove_book(book_index));
                     }
+                    catch (NullPointerException e)
+                	{
+                		System.out.println("bad.");
+                		message.setText("Invalid input run the program again");
+                        submit.getScene().setRoot(loadMainScreen());
+                	}
                     catch (InputMismatchException e)
                     { 
                         message.setText("Non integer entered");
+                        submit.getScene().setRoot(loadMainScreen());
                     }
-                    catch(IndexOutOfBoundsException e)
+                    catch(ArrayIndexOutOfBoundsException e)
                     {
                         message.setText("Index out of range");
+                        submit.getScene().setRoot(loadMainScreen());
                     }
                 submit.getScene().setRoot(loadMainScreen());
             }
@@ -407,7 +469,7 @@ public class App extends Application {
             public void handle(ActionEvent event) {
                 try 
                 {
-                    tmp_book=new Book(nameBookField.getText(),authorBookField.getText(),Integer.parseInt(serialBookField.getText()),genreBookField.getText());
+                    tmp_book=new Book(nameBookField.getText(),authorBookField.getText(),genreBookField.getText());
                     lib.add_book(tmp_book);
                 } 
                 catch (NumberFormatException e) 
