@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.util.*;
 
@@ -21,7 +22,9 @@ public class AppBoxes extends Application {
     public Library lib=new Library("The Library", 50);	//initiate Library with max size 50
     
     Button submit = new Button("Submit");
-    Button back = new Button("Back");
+    Button home = new Button("Home");
+    HBox hub = new HBox(submit, home);
+    
     
  // Create the buttons
     Button loginButton = new Button("Login");
@@ -95,7 +98,7 @@ public class AppBoxes extends Application {
         
         
         VBox vbox = new VBox();
-        Label message= new Label("Please log in");
+        Label message= new Label("Please log in/register an account");
     }
     
     /*
@@ -154,10 +157,10 @@ public class AppBoxes extends Application {
     public VBox loadLoginScreen() {
     	VBox vbox = new VBox();
     	
-    	back.setOnAction(new EventHandler<ActionEvent>() {
+    	home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	back.getScene().setRoot(loadMainScreen());
+            	home.getScene().setRoot(loadMainScreen());
             }
         });
     	
@@ -193,7 +196,7 @@ public class AppBoxes extends Application {
         usernameField.clear();
         passwordField.clear();
         // Add the username and password fields to the VBox
-        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, submit, back);
+        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, hub);
     	
     	return vbox;
     }
@@ -201,10 +204,10 @@ public class AppBoxes extends Application {
 	public VBox loadRegScreen() {
 		VBox vbox = new VBox();
 		
-		back.setOnAction(new EventHandler<ActionEvent>() {
+		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	back.getScene().setRoot(loadMainScreen());
+            	home.getScene().setRoot(loadMainScreen());
             }
         });
     	
@@ -248,8 +251,35 @@ public class AppBoxes extends Application {
         passwordField.clear();
         restrictionField.clear();
         // Add the username and password fields to the VBox
-        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField,restrictionLabel, restrictionField, submit, back);
+        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField,restrictionLabel, restrictionField, hub);
         
     	return vbox;
+	}
+	
+	public VBox loadViewBooks() {
+		VBox vbox = new VBox();
+		
+		return vbox;
+	}
+	
+	public VBox loadRentBook() {
+		VBox vbox = new VBox();
+		
+		return vbox;
+	}
+	public VBox loadReturnBook() {
+		VBox vbox = new VBox();
+		
+		return vbox;
+	}
+	public VBox loadAddLibBook() {
+		VBox vbox = new VBox();
+		
+		return vbox;
+	}
+	public VBox loadRemLibBook() {
+		VBox vbox = new VBox();
+		
+		return vbox;
 	}
 }
