@@ -47,7 +47,7 @@ public class AppBoxes extends Application {
     TextField restrictionField = new TextField();
     
     // Create the text fields for the rent a book
-    Label indexLabel = new Label("Index ");
+    Label indexLabel = new Label("Please enter a book index ");
     TextField indexField = new TextField();
     
     // Create the text fields for the add to library
@@ -60,7 +60,7 @@ public class AppBoxes extends Application {
     Label genreBookLabel = new Label("Genre: ");
     TextField genreBookField = new TextField();
     
-    Label message= new Label("Please log in");
+    Label message= new Label("Please log in/register an account");
     boolean bool=true; //bool set to true to keep while loop on
     String user;	//local inputted username
     String pass;	//local inputted password
@@ -98,7 +98,7 @@ public class AppBoxes extends Application {
         
         
         VBox vbox = new VBox();
-        Label message= new Label("Please log in/register an account");
+        
     }
     
     /*
@@ -115,12 +115,14 @@ public class AppBoxes extends Application {
     	VBox vbox = new VBox();
     	vbox.getChildren().clear();
     	
-    	// redefine nav buttons everytime go back to main screen
+    	// redefine nav buttons everytime it go back to main screen
         submit = new Button("Submit");
         home = new Button("Home");
         hub = new HBox(submit, home);
         
+        //*****BASE ACTIONS/NO LOGIN REQ*****\\
         
+        // login 
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -128,6 +130,7 @@ public class AppBoxes extends Application {
             }
         });
         
+        // register
         registerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -135,6 +138,7 @@ public class AppBoxes extends Application {
             }
         });
         
+        // view books
         listBooks.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -142,12 +146,30 @@ public class AppBoxes extends Application {
             }
         });
         
-        addBookButton.setOnAction(new EventHandler<ActionEvent>() {
-        	@Override
-        	public void handle(ActionEvent event) {
-        		addBookButton.getScene().setRoot(loadRentBook());
-        	}
+        // exit program
+        exitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	
+            }
         });
+        
+        /////******NEED USER LOGIN TO WORK******\\\\\
+        if(logged) {
+        	addBookButton.setOnAction(new EventHandler<ActionEvent>() {
+            	@Override
+            	public void handle(ActionEvent event) {
+            		addBookButton.getScene().setRoot(loadRentBook());
+            	}
+            });
+        	returnBookButton.setOnAction(new EventHandler<ActionEvent>() {
+            	@Override
+            	public void handle(ActionEvent event) {
+            		addBookButton.getScene().setRoot(loadRentBook());
+            	}
+            });
+        }
+        
 
         vbox.getChildren().addAll(loginButton,registerButton,listBooks,addBookButton,returnBookButton,exitButton,message);
 
@@ -168,19 +190,19 @@ public class AppBoxes extends Application {
     	submit.setOnAction(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			System.out.println("This worked!");
-    			 user=usernameField.getText();
-                 pass=passwordField.getText();
-                 System.out.println(user + " " + pass);
+    			user=usernameField.getText();
+                pass=passwordField.getText();
+                System.out.println(user + " " + pass);
  				for(int i=0;i<count;i++)
  				{
  					if(member_list[i].getName().equals(user))
  					{
-                         System.out.println(user+pass);
+                        System.out.println(user+pass);
  						if(member_list[i].password_cmp(pass))
  						{
  							logged=true;
- 							message.setText("you have successfully logged in");
+ 							reader=member_list[i];
+ 							message.setText("You have successfully logged in");
  							submit.getScene().setRoot(loadMainScreen());
  						}
  					}
@@ -240,9 +262,9 @@ public class AppBoxes extends Application {
                 if(!repeat)	//For all normal cases
 				{
                     System.out.println(user+pass);
-					reader=new Member(user,pass,restriction);
-					member_list[count]=reader;
+					member_list[count] = new Member(user,pass,restriction);
 					count++;
+					message.setText("Account successfully created");
 					submit.getScene().setRoot(loadMainScreen());
 				}
     		}
@@ -263,6 +285,8 @@ public class AppBoxes extends Application {
 		vbox.getChildren().clear();
 		lib.list_books(vbox);
 		
+		reader.list_books(vbox);
+		
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -275,9 +299,12 @@ public class AppBoxes extends Application {
 	}
 	
 	public VBox loadRentBook() {
+		
 		VBox vbox = new VBox();
 		lib.list_books(vbox);
-
+		
+		vbox.getChildren().addAll(indexLabel,indexField);
+		Label msg = new Label("");
 		
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -286,22 +313,61 @@ public class AppBoxes extends Application {
             }
         });
 		
+		submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	try
+                {
+                    book_index=Integer.parseInt(indexField.getText());
+                    tmp_book=lib.remove_book(book_index);
+                    reader.add_book(tmp_book);
+                    msg.setText("You have successfully added a book");
+                }
+                catch (NumberFormatException e)
+                { 
+                    message.setText("Invalid input run the program again");
+                    
+                }
+            }
+        });
 		
-		
+		vbox.getChildren().addAll(msg,hub);
 		return vbox;
 	}
+	
 	public VBox loadReturnBook() {
 		VBox vbox = new VBox();
+		
+		home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	home.getScene().setRoot(loadMainScreen());
+            }
+        });
 		
 		return vbox;
 	}
 	public VBox loadAddLibBook() {
 		VBox vbox = new VBox();
 		
+		home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	home.getScene().setRoot(loadMainScreen());
+            }
+        });
+		
 		return vbox;
 	}
 	public VBox loadRemLibBook() {
 		VBox vbox = new VBox();
+		
+		home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	home.getScene().setRoot(loadMainScreen());
+            }
+        });
 		
 		return vbox;
 	}
