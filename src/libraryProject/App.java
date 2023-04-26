@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.*;
@@ -36,7 +37,8 @@ public class App extends Application {
         Button addBookLibButton = new Button("Add Book to library");
         Button removeBookLibButton = new Button("Add remove a book from the library");
         Button submit = new Button("Submit");
-
+        Button home = new Button("home");
+        HBox home_submit = new HBox(submit,home);
         // Create the text fields for the login button
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
@@ -57,9 +59,10 @@ public class App extends Application {
         Label genreBookLabel = new Label("Genre: ");
         TextField genreBookField = new TextField();
         VBox vbox = new VBox();
-
+        //random messages
         Label message= new Label("Message");
-        // Add event handlers for the buttons
+        Label prompt = new Label("Choose an action:");
+        // Add event handlers for the button
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -68,7 +71,7 @@ public class App extends Application {
                 usernameField.clear();
                 passwordField.clear();
                 // Add the username and password fields to the VBox
-                vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, submit);
+                vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, home_submit);
                 state=1;
             }
         });
@@ -81,7 +84,7 @@ public class App extends Application {
                 passwordField.clear();
                 restrictionField.clear();
                 // Add the username and password fields to the VBox
-                vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField,restrictionLabel, restrictionField, submit);
+                vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField,restrictionLabel, restrictionField ,home_submit);
                 state=2;
             }
         });
@@ -90,8 +93,7 @@ public class App extends Application {
             public void handle(ActionEvent event) {
                 vbox.getChildren().clear();
                 lib.list_books(vbox);
-                submit.setText("Return");
-                vbox.getChildren().add(submit);
+                vbox.getChildren().add(home);
                 state=3;
             }
         });
@@ -99,16 +101,17 @@ public class App extends Application {
         addBookButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                state=4;
                 vbox.getChildren().clear();
                 if(logged)
                 {
+                    state=4;
                     lib.list_books(vbox);
-
+                    vbox.getChildren().addAll(indexLabel,indexField,home_submit);
                 }
                 else
                 {
                     message.setText("Please log in before renting a book");
+                    submit.fire();
                 }
             }
         });
@@ -133,17 +136,24 @@ public class App extends Application {
                 state=7;
                 if(!logged)
                 {
-                    submit.fire();
                     message.setText("Not logged in please log in");
+                    submit.fire();
                 }
                 else{
                 // Clear the previous contents of the VBox
                 vbox.getChildren().clear();
-                vbox.getChildren().addAll(nameBookLabel,nameBookField,authorBookLabel,authorBookField,serialBookLabel,serialBookField,genreBookLabel,genreBookField);
+                vbox.getChildren().addAll(nameBookLabel,nameBookField,authorBookLabel,authorBookField,serialBookLabel,serialBookField,genreBookLabel,genreBookField,home_submit);
                 }
             }
         });
-
+        home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // Clear the previous contents of the VBox, usernameField, and passwordFiel
+                state=0;
+                submit.fire();
+            }
+        });
         submit.setOnAction(new EventHandler<ActionEvent>() {
          @Override
             public void handle(ActionEvent event) {
@@ -159,8 +169,10 @@ public class App extends Application {
             int book_index;	//stores index of chosen book
             Book tmp_book;	//stores temp index of chosen book
             switch (state) {
-                
-               case 1:
+                case 0:
+
+                    break;
+                case 1:
                 try
 				{
 					user=usernameField.getText();
@@ -190,7 +202,7 @@ public class App extends Application {
 					message.setText("your username or password was incorrect");
 				}
 				break;
-               case 2:
+                case 2:
                     try
                     {
                     user=usernameField.getText();
@@ -220,19 +232,31 @@ public class App extends Application {
 						count++;
 					}
                     break;
-               case 3:
-                    submit.setText("Submit");
+                case 3:
                     break;
-               case 4:
-                    nameBookField.getText();
+                case 4:
+                    try
+                    {
+                        book_index=Integer.parseInt(indexField.getText());
+                        tmp_book=lib.remove_book(book_index);
+                        reader.add_book(tmp_book);
+                        message.setText("You have successfully added a book");
+                    }
+                    catch (NumberFormatException e)
+                    { 
+                        message.setText("Invalid input run the program again");
+                        break;
+                    }
                     break;
-               case 5:
+                case 5:
                     
                     break;
-               default:
+                default:
                   
                   break;
             }
+            prompt.setText("Choose an action:");
+            state=0;
             vbox.getChildren().clear();
             vbox.getChildren().addAll(loginButton,registerButton,listBooks,addBookButton,returnBookButton,exitButton,message);
          }
