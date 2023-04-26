@@ -144,6 +144,36 @@ public class AppBoxes extends Application {
             }
         });
         
+        listBooks.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	listBooks.getScene().setRoot(loadViewBooks());
+            }
+        });
+        addBookButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	addBookButton.getScene().setRoot(loadRentBook());
+            }
+        });
+        returnBookButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	returnBookButton.getScene().setRoot(loadReturnBook());
+            }
+        });
+        addBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	addBookLibButton.getScene().setRoot(loadAddLibBook());
+            }
+        });
+        removeBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	removeBookLibButton.getScene().setRoot(loadRemLibBook());
+            }
+        });
         
         
     	
