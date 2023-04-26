@@ -29,6 +29,7 @@ public class App extends Application {
         // Create the buttons
         Button loginButton = new Button("Login");
         Button registerButton = new Button("Register");
+        Button listBooks = new Button("List Books in library");
         Button addBookButton = new Button("Rent Book");
         Button returnBookButton = new Button("Return Book");
         Button exitButton = new Button("Exit");
@@ -43,6 +44,18 @@ public class App extends Application {
         TextField passwordField = new TextField();
         Label restrictionLabel = new Label("restriction:");
         TextField restrictionField = new TextField();
+        // Create the text fields for the rent a book
+        Label indexLabel = new Label("Index ");
+        TextField indexField = new TextField();
+        // Create the text fields for the add to library
+        Label nameBookLabel = new Label("Book: ");
+        TextField nameBookField = new TextField();
+        Label authorBookLabel = new Label("Author: ");
+        TextField authorBookField = new TextField();
+        Label serialBookLabel = new Label("Serial Number: ");
+        TextField serialBookField = new TextField();
+        Label genreBookLabel = new Label("Genre: ");
+        TextField genreBookField = new TextField();
         VBox vbox = new VBox();
 
         Label message= new Label("Message");
@@ -72,12 +85,31 @@ public class App extends Application {
                 state=2;
             }
         });
+        listBooks.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                vbox.getChildren().clear();
+                lib.list_books(vbox);
+                submit.setText("Return");
+                vbox.getChildren().add(submit);
+                state=3;
+            }
+        });
 
         addBookButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                
-                state=3;
+                state=4;
+                vbox.getChildren().clear();
+                if(logged)
+                {
+                    lib.list_books(vbox);
+
+                }
+                else
+                {
+                    message.setText("Please log in before renting a book");
+                }
             }
         });
 
@@ -85,7 +117,7 @@ public class App extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Return Book button clicked");
-                state=4;
+                state=5;
             }
         });
 
@@ -93,6 +125,22 @@ public class App extends Application {
             @Override
             public void handle(ActionEvent event) {
                 primaryStage.close();
+            }
+        });
+        addBookLibButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                state=7;
+                if(!logged)
+                {
+                    submit.fire();
+                    message.setText("Not logged in please log in");
+                }
+                else{
+                // Clear the previous contents of the VBox
+                vbox.getChildren().clear();
+                vbox.getChildren().addAll(nameBookLabel,nameBookField,authorBookLabel,authorBookField,serialBookLabel,serialBookField,genreBookLabel,genreBookField);
+                }
             }
         });
 
@@ -111,6 +159,7 @@ public class App extends Application {
             int book_index;	//stores index of chosen book
             Book tmp_book;	//stores temp index of chosen book
             switch (state) {
+                
                case 1:
                 try
 				{
@@ -163,7 +212,6 @@ public class App extends Application {
                             break;
                         }
                     }
-                    pass=passwordField.getText();
                     if(!repeat)	//For all normal cases
 					{
                         System.out.println(user+pass);
@@ -173,28 +221,28 @@ public class App extends Application {
 					}
                     break;
                case 3:
-                    
-                  break;
+                    submit.setText("Submit");
+                    break;
                case 4:
-                  
-                  break;
+                    nameBookField.getText();
+                    break;
                case 5:
-
+                    
                     break;
                default:
                   
                   break;
             }
             vbox.getChildren().clear();
-            vbox.getChildren().addAll(loginButton,registerButton,addBookButton,returnBookButton,exitButton,message);
+            vbox.getChildren().addAll(loginButton,registerButton,listBooks,addBookButton,returnBookButton,exitButton,message);
          }
      });
          
         // Create a VBox to hold the buttons
-        vbox.getChildren().addAll(loginButton,registerButton,addBookButton,returnBookButton,exitButton);
+        vbox.getChildren().addAll(loginButton,registerButton,listBooks,addBookButton,returnBookButton,exitButton,message);
 
         // Create a scene and set it on the stage
-        Scene scene = new Scene(vbox, 300, 250);
+        Scene scene = new Scene(vbox, 800, 800);
         primaryStage.setScene(scene);
 
         // Set the stage title and show it
