@@ -117,4 +117,8 @@ public class App extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1b3ea11 (Added comments and changed formatting)
