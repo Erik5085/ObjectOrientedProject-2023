@@ -1,14 +1,16 @@
+package application;
+
 
 /**
  * Book class stores basic values for books to be called by Library and Member classes
- * @author Erik Vaughn, Thomas Truong
+ * @author Erik Vaughn, Thomas Truong, Antonio Garcia
  *
  */
 public class Book{
-	public String name;			//book name
-    public String author;		//book author
-    public String genre;		//book genre
-    public int restriction;		//restriction level of book (0-normal member, 1-librarian)
+	private String name;			//book name
+    private String author;		//book author
+    private String genre;		//book genre
+    private int restriction;		//restriction level of book (0-normal member, 1-librarian)
     
     /*
      * Book constructor for empty vals
