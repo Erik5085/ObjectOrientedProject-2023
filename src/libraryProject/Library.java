@@ -1,4 +1,3 @@
-package application;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -85,6 +84,8 @@ public class Library {
      */
     public Book remove_book(int index)
     {
+        if(index>=amount)
+            return null;
         Book tmp=books[index];
         for(int i = index;i<(amount-1);i++)
         {
