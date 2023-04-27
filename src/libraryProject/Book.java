@@ -1,4 +1,4 @@
-package application;
+
 /**
  * Book class stores basic values for books to be called by Library and Member classes
  * @author Erik Vaughn, Thomas Truong
