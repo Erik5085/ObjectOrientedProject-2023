@@ -1,4 +1,4 @@
-
+package application;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,11 +14,11 @@ import javafx.stage.Stage;
 import java.util.*;
 
 /**
- * App
- * @author Erik Vaughn, Thomas Truong, 
+ * App class uses JavaFX to display library instead of through Member.java
+ * @author Erik Vaughn, Thomas Truong, Antonio Garcia
  *
  */
-public class App extends Application {
+public class AppBoxes extends Application {
     public int count=0;	//stores count for For loops
     public int state=0;	//stores current state of event
     public boolean logged=false; //checks if user is logged in
@@ -27,12 +27,13 @@ public class App extends Application {
     public Member member_list[]=new Member[50];	//Create array of max 50 members
     public Library lib=new Library("The Library", 50);	//initiate Library with max size 50
     
-    Button submit = new Button("Submit");
-    Button home = new Button("Home");
-    HBox hub = new HBox(submit, home);
+    Button submit = new Button("Submit");	// Submit button creation
+    Button home = new Button("Home");		// Home button creation
+    HBox hub = new HBox(submit, home);		// Combines Submit and Home buttons horizontally
     
     
  // Create the buttons
+    // Buttons for main menu
     Button loginButton = new Button("Login");
     Button registerButton = new Button("Register");
     Button listBooks = new Button("List Books in library");
@@ -40,6 +41,7 @@ public class App extends Application {
     Button returnBookButton = new Button("Return Book");
     Button exitButton = new Button("Exit");
     Button userBooksButton = new Button("View user's books");
+    
     // Buttons for restrict lvl 1
     Button addBookLibButton = new Button("Add Book to library");
     Button removeBookLibButton = new Button("Remove a book from the library");
@@ -53,7 +55,7 @@ public class App extends Application {
     Label restrictionLabel = new Label("restriction:");
     TextField restrictionField = new TextField();
     
-    // Create the text fields for the rent a book
+    // Create the text fields for the rent-a-book
     Label indexLabel = new Label("Index ");
     TextField indexField = new TextField();
     
@@ -62,27 +64,23 @@ public class App extends Application {
     TextField nameBookField = new TextField();
     Label authorBookLabel = new Label("Author: ");
     TextField authorBookField = new TextField();
-    Label serialBookLabel = new Label("Serial Number: ");
-    TextField serialBookField = new TextField();
     Label genreBookLabel = new Label("Genre: ");
     TextField genreBookField = new TextField();
     
+    // User prompts and error messages
     Label prompt = new Label("Pick an action");
     Label message= new Label("Please log in/register an account");
+    
     boolean bool=true; //bool set to true to keep while loop on
     String user;	//local inputted username
     String pass;	//local inputted password
     int restriction;	//Stores restriction of user
-    int inp;		//Value storage for case choice
-    
-
+    int inp;			//Value storage for case choice
     boolean repeat=false; //Used for register event
-    //Adding books to Book array
     
+    //Adding books to Book array
     int book_index;	//stores index of chosen book
     Book tmp_book;	//stores temp index of chosen book
-    
-    
     @Override
     
     /*
@@ -90,7 +88,6 @@ public class App extends Application {
      */
     public void start(Stage primaryStage) throws Exception {
     	// Create a scene and set it on the stage
-    	
         Scene scene = new Scene(loadMainScreen(), 500, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -121,6 +118,7 @@ public class App extends Application {
         submit = new Button("Submit");
         home = new Button("Home");
         hub = new HBox(submit, home);
+        
         usernameField.clear();
         passwordField.clear();
         restrictionField.clear();
@@ -224,7 +222,7 @@ public class App extends Application {
             }
         });
     	
-    	// On 
+    	// On submit run this
     	submit.setOnAction(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
@@ -274,6 +272,7 @@ public class App extends Application {
             }
         });
     	
+		// On submit, run this
     	submit.setOnAction(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
@@ -318,12 +317,16 @@ public class App extends Application {
     	return vbox;
 	}
 	
+	/*
+	 * Loads view books screen
+	 */
 	public VBox loadViewBooks() {
 		VBox vbox = new VBox();
         prompt.setText("Here is a list of all the books in the library");
         vbox.getChildren().add(prompt);
-		lib.list_books(vbox);
+		lib.list_books(vbox);	//prints out book array
 		
+		// Home button function
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -335,6 +338,9 @@ public class App extends Application {
 		return vbox;
 	}
 	
+	/*
+	 * Loads rent books screen
+	 */
 	public VBox loadRentBook() {
 		VBox vbox = new VBox();
         prompt.setText("Which book do you want to rent from the library (give the index of the book)");
@@ -444,12 +450,17 @@ public class App extends Application {
 		return vbox;
 	}
 
+	/*
+	 * Screen for loading user's books
+	 */
     public VBox loadUserBooks(){
         VBox vbox = new VBox();
         prompt.setText("Here is all of the books you have");
         vbox.getChildren().add(prompt);
         reader.list_books(vbox);
         vbox.getChildren().addAll(home);
+        
+        // Home button function
         home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -458,6 +469,10 @@ public class App extends Application {
         });
         return vbox;
     }
+    
+    /*
+     * Loads adding book screen (for restriction 1 only)
+     */
 	public VBox loadAddLibBook() {
 		VBox vbox = new VBox();
         prompt.setText("Give information on the book you want to add to the library");
@@ -489,18 +504,26 @@ public class App extends Application {
         });
 		return vbox;
 	}
+	
+	/*
+	 * Loads removing book screen (for restriction 1 only)
+	 */
 	public VBox loadRemLibBook() {
 		VBox vbox = new VBox();
         prompt.setText("Which book do you want to remove from the library");
         vbox.getChildren().addAll(prompt);
 		lib.list_books(vbox);
         vbox.getChildren().addAll(indexLabel,indexField,hub,message);
+        
+        // Home button function
         home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
             	home.getScene().setRoot(loadMainScreen());
             }
         });
+        
+        // Submit button function
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
