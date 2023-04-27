@@ -1,9 +1,10 @@
+package application;
 
 import java.util.*;
 
 /**
- * 
- * @author Erik ___, Thomas Truong
+ * Member class creates a member object extended from Library to store user specific books and authentication settings
+ * @author Erik Vaughn, Thomas Truong, Antonio Garcia
  *
  */
 public class Member extends Library{
@@ -249,13 +250,13 @@ public class Member extends Library{
 					{
 					tmp_book=new Book();
 					System.out.println("what is the name of the book you want to add");
-					tmp_book.name=kb.next();
+					tmp_book.setName(kb.next());
 					System.out.println("what is the author of the book you want to add");
-					tmp_book.author=kb.next();
+					tmp_book.setAuthor(kb.next());
 					System.out.println("what is the genre of the book you want to add");
-					tmp_book.genre=kb.next();
+					tmp_book.setGenre(kb.next());
 					System.out.println("what is the restriction level of the book you want to add");
-					tmp_book.restriction=kb.nextInt();
+					tmp_book.setRestriction(kb.nextInt());
 					lib.add_book(tmp_book);
 					}
 					catch (InputMismatchException e)
