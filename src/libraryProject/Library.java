@@ -1,3 +1,5 @@
+package application;
+
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -12,7 +14,7 @@ import javafx.stage.Stage;
 
 /**
  * Library class stores Books as arrays and adds/removes books
- * @author Erik Vaughn, Thomas Truong
+ * @author Erik Vaughn, Thomas Truong, Antonio Garcia
  *
  */
 public class Library {
