@@ -53,7 +53,7 @@ public class Library {
         System.out.println("Index\tName\tAuthor\tGenre");
         for(int i=0;i<amount;i++)
         {
-            System.out.printf("%d\t%s\t%s\t%d\t%s\n",i,books[i].getName(),books[i].getAuthor(),books[i].getGenre());
+            System.out.printf("%d\t%s\t%s\t%d\n",i,books[i].getName(),books[i].getAuthor(),books[i].getGenre());
         }
     }
     /*
