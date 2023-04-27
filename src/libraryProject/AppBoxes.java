@@ -1,4 +1,4 @@
-package application;
+
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,7 +18,7 @@ import java.util.*;
  * @author Erik Vaughn, Thomas Truong, 
  *
  */
-public class AppBoxes extends Application {
+public class App extends Application {
     public int count=0;	//stores count for For loops
     public int state=0;	//stores current state of event
     public boolean logged=false; //checks if user is logged in
@@ -101,8 +101,6 @@ public class AppBoxes extends Application {
 		lib.add_book(new Book("Pride and Prejudice","Jane Austen","Classics"));
 		lib.add_book(new Book("Industrial society and its future","Ted Kazynski","Nonfiction"));
 		lib.add_book(new Book("A Game of Thrones","George R. R. Martin","Fantasy"));
-
-        VBox vbox = new VBox();
     }
     
     /*
@@ -123,7 +121,10 @@ public class AppBoxes extends Application {
         submit = new Button("Submit");
         home = new Button("Home");
         hub = new HBox(submit, home);
-        
+        usernameField.clear();
+        passwordField.clear();
+        restrictionField.clear();
+        indexField.clear();
         // user login button
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -213,8 +214,8 @@ public class AppBoxes extends Application {
      */
     public VBox loadLoginScreen() {
     	VBox vbox = new VBox();
-		vbox.getChildren().clear();
-
+        prompt.setText("Put in a username and password");
+        vbox.getChildren().add(prompt);
 		// Home button goes back home
     	home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -245,7 +246,6 @@ public class AppBoxes extends Application {
  				}
  				if(!logged)
  				{
- 					submit.getScene().setRoot(loadMainScreen());
  					message.setText("Your username or password was incorrect");
  				}
     		}
@@ -254,7 +254,7 @@ public class AppBoxes extends Application {
         usernameField.clear();
         passwordField.clear();
         // Add the username and password fields to the VBox
-        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, hub);
+        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, hub,message);
     	
     	return vbox;
     }
@@ -264,8 +264,8 @@ public class AppBoxes extends Application {
      */
 	public VBox loadRegScreen() {
 		VBox vbox = new VBox();
-		vbox.getChildren().clear();
-
+        prompt.setText("Create a username and password for yourself");
+        vbox.getChildren().add(prompt);
 		// Home button goes back home
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -277,6 +277,7 @@ public class AppBoxes extends Application {
     	submit.setOnAction(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
+                repeat=false;
     			try
                 {
                 user=usernameField.getText();
@@ -295,12 +296,10 @@ public class AppBoxes extends Application {
                     {
                         message.setText("Username already in use");
                         repeat=true;
-                        submit.getScene().setRoot(loadMainScreen());
                     }
                 }
                 if(!repeat)	//For successful 
 				{
-                    System.out.println(user+pass);
                     message.setText("Account created successfully");
 					member_list[count] = new Member(user,pass,restriction);
 					count++;
@@ -308,8 +307,6 @@ public class AppBoxes extends Application {
 				}
     		}
     	});
-    	
-    	vbox.getChildren().clear();
         indexField.clear();
         restrictionField.clear();
         usernameField.clear();
@@ -317,13 +314,14 @@ public class AppBoxes extends Application {
         restrictionField.clear();
         
         // Add the username and password fields to the VBox
-        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField,restrictionLabel, restrictionField, hub);
+        vbox.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField,restrictionLabel, restrictionField, hub,message);
     	return vbox;
 	}
 	
 	public VBox loadViewBooks() {
 		VBox vbox = new VBox();
-		vbox.getChildren().clear();
+        prompt.setText("Here is a list of all the books in the library");
+        vbox.getChildren().add(prompt);
 		lib.list_books(vbox);
 		
 		home.setOnAction(new EventHandler<ActionEvent>() {
@@ -339,6 +337,8 @@ public class AppBoxes extends Application {
 	
 	public VBox loadRentBook() {
 		VBox vbox = new VBox();
+        prompt.setText("Which book do you want to rent from the library (give the index of the book)");
+        vbox.getChildren().add(prompt);
 		lib.list_books(vbox);
 		
 		vbox.getChildren().addAll(indexLabel,indexField);
@@ -359,35 +359,35 @@ public class AppBoxes extends Application {
                 {
                     book_index=Integer.parseInt(indexField.getText());
                     tmp_book=lib.remove_book(book_index);
+                    if(tmp_book==null)
+                        message.setText("Invalid Book Choice");
+                    else{
                     reader.add_book(tmp_book);
                     message.setText("You have successfully added a book");
                     submit.getScene().setRoot(loadMainScreen());
+                    }
                 }
             	catch (NullPointerException e)
             	{
             		System.out.println("bad.");
             		message.setText("Invalid input run the program again");
-                    submit.getScene().setRoot(loadMainScreen());
             	}
                 catch (NumberFormatException e)
                 { 
                 	System.out.println("BAD.");
                     message.setText("Invalid input run the program again");
-                    submit.getScene().setRoot(loadMainScreen());
                 }
             	catch (InputMismatchException e)
                 { 
                     message.setText("Non integer entered");
-                    submit.getScene().setRoot(loadMainScreen());
                 }
                 catch(IndexOutOfBoundsException e)
                 {
                     message.setText("Index out of range");
-                    submit.getScene().setRoot(loadMainScreen());
                 }
             }
         });
-        vbox.getChildren().addAll(hub);
+        vbox.getChildren().addAll(hub,message);
         return vbox;
 	}
 	
@@ -396,12 +396,12 @@ public class AppBoxes extends Application {
 	 */
 	public VBox loadReturnBook() {
 		VBox vbox = new VBox();
-        prompt.setText("Which book do you want to return");
+        prompt.setText("Which book do you want to return (give an index for the book you wish to remove)");
         vbox.getChildren().addAll(prompt);
         
 		reader.list_books(vbox);
 		
-        vbox.getChildren().addAll(indexLabel,indexField,hub);
+        vbox.getChildren().addAll(indexLabel,indexField,hub,message);
         
         // Home button goes back home
         home.setOnAction(new EventHandler<ActionEvent>() {
@@ -418,25 +418,27 @@ public class AppBoxes extends Application {
                     try
                     {
                         book_index=Integer.parseInt(indexField.getText());
-                        lib.add_book(reader.remove_book(book_index));
+                        tmp_book=reader.remove_book(book_index);
+                        if(tmp_book==null)
+                            message.setText("invalid input");
+                        else{
+                            lib.add_book(tmp_book);
+                            submit.getScene().setRoot(loadMainScreen());
+                        }
+                    }
+                    catch (NumberFormatException e)
+                    { 
+                        message.setText("Non integer entered");
                     }
                     catch (NullPointerException e)
                 	{
-                		System.out.println("bad.");
                 		message.setText("Invalid input run the program again");
-                        submit.getScene().setRoot(loadMainScreen());
                 	}
-                    catch (InputMismatchException e)
-                    { 
-                        message.setText("Non integer entered");
-                        submit.getScene().setRoot(loadMainScreen());
-                    }
                     catch(ArrayIndexOutOfBoundsException e)
                     {
                         message.setText("Index out of range");
-                        submit.getScene().setRoot(loadMainScreen());
                     }
-                submit.getScene().setRoot(loadMainScreen());
+                    indexField.clear();
             }
         });
 		return vbox;
@@ -444,7 +446,8 @@ public class AppBoxes extends Application {
 
     public VBox loadUserBooks(){
         VBox vbox = new VBox();
-        vbox.getChildren().clear();
+        prompt.setText("Here is all of the books you have");
+        vbox.getChildren().add(prompt);
         reader.list_books(vbox);
         vbox.getChildren().addAll(home);
         home.setOnAction(new EventHandler<ActionEvent>() {
@@ -457,7 +460,8 @@ public class AppBoxes extends Application {
     }
 	public VBox loadAddLibBook() {
 		VBox vbox = new VBox();
-        vbox.getChildren().addAll(nameBookLabel,nameBookField,authorBookLabel,authorBookField,serialBookLabel,serialBookField,genreBookLabel,genreBookField,hub);
+        prompt.setText("Give information on the book you want to add to the library");
+        vbox.getChildren().addAll(prompt,nameBookLabel,nameBookField,authorBookLabel,authorBookField,genreBookLabel,genreBookField,hub);
 		home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -471,12 +475,16 @@ public class AppBoxes extends Application {
                 {
                     tmp_book=new Book(nameBookField.getText(),authorBookField.getText(),genreBookField.getText());
                     lib.add_book(tmp_book);
-                } 
-                catch (NumberFormatException e) 
-                {
-                    message.setText("Error Occurred please try again");
-                }
-            	submit.getScene().setRoot(loadMainScreen());
+                    message.setText("You have successfully added a book to the library");
+                    submit.getScene().setRoot(loadMainScreen());
+                }  
+                catch (NullPointerException |NumberFormatException|InputMismatchException |IndexOutOfBoundsException e)
+            	{
+            		message.setText("Invalid input please try again");
+                    nameBookField.clear();
+                    authorBookField.clear();
+                    genreBookField.clear();
+            	}
             }
         });
 		return vbox;
@@ -486,7 +494,7 @@ public class AppBoxes extends Application {
         prompt.setText("Which book do you want to remove from the library");
         vbox.getChildren().addAll(prompt);
 		lib.list_books(vbox);
-        vbox.getChildren().addAll(indexLabel,indexField,hub);
+        vbox.getChildren().addAll(indexLabel,indexField,hub,message);
         home.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -499,17 +507,21 @@ public class AppBoxes extends Application {
                     try
                     {
                         book_index=Integer.parseInt(indexField.getText());
-                        lib.remove_book(book_index);
+                        tmp_book = lib.remove_book(book_index);
+                        if(tmp_book==null){
+                            indexField.clear();
+                            message.setText("Out of range or invalid input");
+                        }
+                        else{
+                            message.setText("you have successfully removed a book from the library");
+                            submit.getScene().setRoot(loadMainScreen());
+                        }
                     }
-                    catch (InputMismatchException e)
+                    catch (NumberFormatException e)
                     { 
                         message.setText("Non integer entered");
+                        indexField.clear();
                     }
-                    catch(IndexOutOfBoundsException e)
-                    {
-                        message.setText("Index out of range");
-                    }
-                submit.getScene().setRoot(loadMainScreen());
             }
         });
 		return vbox;
